@@ -2,6 +2,8 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
+import ContractReader from './ContractReader';
+import EtherSender from './EtherSender';
 
 
 const App = () => {
@@ -15,6 +17,8 @@ const [balance, setBalance] = useState();
 const [transactionCount, setTransactionCount] = useState();
 const [network, setNetwork] = useState();
 const [blockNumber, setBlockNumber] = useState();
+const [viewContract, setViewContract] = useState(false);
+const [viewSender, setViewSender] = useState(false);
 
 useEffect(() => {
   if(loginState){
@@ -104,6 +108,7 @@ const stateLogHandler = () => {
   console.log('provider is ',{provider});
   console.log('currentAccount is ',{currentAccount});
   console.log('signer is ',{signer});
+  console.log('viewContract is ', {viewContract});
   
 }
 
@@ -123,7 +128,17 @@ const loggedIn = () => {
 
     <div style={{margin:10}}><b>Transactions Sent: </b> {transactionCount} </div>
 
+    <div style={{display:'flex', justifyContent:'center', margin:10}}>
+      <button onClick={() => {setViewContract(true)}}>View Contract Reader</button>
     </div>
+
+    <div style={{display:'flex', justifyContent:'center', margin:10}}>
+      <button onClick={() => {setViewSender(true)}}>View Ether Sender</button>
+    </div>
+    </div>
+
+    
+
     );
 
 
@@ -132,9 +147,19 @@ const loggedIn = () => {
   }
 }
 
+  
 
+  const contractRender = () => {
+    if(viewContract){
+      return <ContractReader signerOrProvider={signer} userAddress={currentAccount}/>
+    }
+  }
 
-
+  const senderRender = () => {
+    if(viewSender){
+      return <EtherSender network={network} userAddress={currentAccount} signer={signer} provider={provider}/>
+    }
+  }
 
 
 
@@ -147,6 +172,12 @@ const loggedIn = () => {
     </div>
 
     <div>{loggedIn()}</div>
+
+    <div>{contractRender()}</div>
+
+    <div>{senderRender()}</div>
+
+  
 
     <div style={{display:'flex', justifyContent:'center'}}>
       <button onClick={stateLogHandler}>Console Log State</button>
